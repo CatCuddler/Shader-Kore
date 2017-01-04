@@ -2,6 +2,8 @@
 
 #include <Kore/IO/FileReader.h>
 #include <Kore/Graphics/Graphics.h>
+#include <Kore/Graphics/Graphics2.h>
+#include <Kore/Graphics/Color.h>
 #include <Kore/Graphics/Shader.h>
 #include <Kore/System.h>
 #include <limits>
@@ -11,16 +13,38 @@
 using namespace Kore;
 
 namespace {
+    Graphics2* g2;
+    
+    Texture* imageRed;
+    Texture* imageGreen;
+    Texture* imageBlue;
+    
 	Shader* vertexShader;
 	Shader* fragmentShader;
 	Program* program;
 	VertexBuffer* vertices;
 	IndexBuffer* indices;
+    
+    mat4 projectionMatrix;
 
 	void update() {
-        printf("update\n");
+        //printf("update\n");
 		Graphics::begin();
 		Graphics::clear(Kore::Graphics::ClearColorFlag);
+        
+        g2->begin();
+        
+        g2->drawImage(imageRed, 520, 50);
+        g2->drawImage(imageGreen, 560, 50);
+        g2->drawImage(imageBlue, 600, 50);
+        
+        g2->setColor(Color::Yellow);
+        g2->fillTriangle(500, 300, 700, 300, 600, 200);
+        g2->setColor(Color::Blue);
+        g2->drawRect(500, 10, 150, 150, 3);
+        g2->setColor(Color::White);
+
+        g2->end();
 
 		program->set();
 		Graphics::setVertexBuffer(*vertices);
@@ -33,21 +57,13 @@ namespace {
 }
 
 int kore(int argc, char** argv) {
-    Kore::System::setName("Shader");
-	Kore::System::setup();
-	Kore::WindowOptions options;
-	options.title = "Shader";
-	options.width = 1024;
-	options.height = 768;
-	options.x = 100;
-	options.y = 100;
-	options.targetDisplay = -1;
-	options.mode = WindowMode::WindowModeWindow;
-	options.rendererOptions.depthBufferBits = 16;
-	options.rendererOptions.stencilBufferBits = 8;
-	options.rendererOptions.textureFormat = 0;
-	options.rendererOptions.antialiasing = 0;
-	Kore::System::initWindow(options);
+    int w = 1024;
+    int h = 768;
+    
+    System::init("Shader", w, h);
+    
+    g2 = new Graphics2(w, h);
+    
 	Kore::System::setCallback(update);
 
 	FileReader vs("shader.vert");
@@ -56,10 +72,13 @@ int kore(int argc, char** argv) {
 	fragmentShader = new Shader(fs.readAll(), fs.size(), FragmentShader);
 	VertexStructure structure;
 	structure.add("pos", Float3VertexData);
+    
 	program = new Program;
 	program->setVertexShader(vertexShader);
 	program->setFragmentShader(fragmentShader);
 	program->link(structure);
+    
+    projectionMatrix = mat4::orthogonalProjection(0, w, h, 0, 0.1f, 1000);
 
 	vertices = new VertexBuffer(3, structure);
 	float* v = vertices->lock();
@@ -72,6 +91,10 @@ int kore(int argc, char** argv) {
 	int* i = indices->lock();
 	i[0] = 0; i[1] = 1; i[2] = 2;
 	indices->unlock();
+    
+    imageRed = new Texture("Textures/red.png");
+    imageGreen = new Texture("Textures/green.png");
+    imageBlue = new Texture("Textures/blue.png");
 
 	Kore::System::start();
 
