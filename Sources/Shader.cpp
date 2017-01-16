@@ -25,10 +25,10 @@ namespace {
 	VertexBuffer* vertices;
 	IndexBuffer* indices;
     
-    Kravur* font14;
+    /*Kravur* font14;
     Kravur* font24;
     Kravur* font34;
-    Kravur* font44;
+    Kravur* font44;*/
 
 	void update() {
         //printf("update\n");
@@ -47,12 +47,12 @@ namespace {
         g2->drawRect(500, 10, 150, 150, 3);
         g2->setColor(Color::White);
         
-        g2->setFont(font24);
+        /*g2->setFont(font24);
         g2->setFontColor(Color::White);
         g2->setFontSize(24);
         char text[42];
         sprintf(text, "Hallo Shader");
-        g2->drawString(text, 50, 10);
+        g2->drawString(text, 50, 10);*/
 
         g2->end();
 
@@ -104,10 +104,10 @@ int kore(int argc, char** argv) {
     imageGreen = new Texture("Textures/green.png");
     imageBlue = new Texture("Textures/blue.png");
     
-    font14 = Kravur::load("Fonts/arial", FontStyle(), 14);
+    /*font14 = Kravur::load("Fonts/arial", FontStyle(), 14);
     font24 = Kravur::load("Fonts/arial", FontStyle(), 24);
     font34 = Kravur::load("Fonts/arial", FontStyle(), 34);
-    font44 = Kravur::load("Fonts/arial", FontStyle(), 44);
+    font44 = Kravur::load("Fonts/arial", FontStyle(), 44);*/
 
 	Kore::System::start();
 
